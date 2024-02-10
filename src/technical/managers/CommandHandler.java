@@ -1,9 +1,10 @@
-package technical;
+package technical.managers;
 
+import technical.Command;
 import technical.commands.*;
+import technical.exceptions.NoSuchCommandException;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.Arrays;
 import java.util.HashMap;
 
@@ -16,36 +17,34 @@ public class CommandHandler implements Handler {
     static {
         commands.put("help", new HelpCommand());
         commands.put("save", new SaveCommand());
+        commands.put("exit", new ExitCommand());
+        commands.put("add", new AddCommand());
     }
 
-    private final InputStream input;
+    private final InputManager input;
+    private HistoryManager history;
 
-    public CommandHandler(InputStream inp){
+    public CommandHandler(InputManager inp){
         this.input = inp;
-    }
-
-    public String nextLine() throws IOException {
-        String line = "";
-        char c;
-        while ((c = (char)(input.read())) != '\n'){
-            line = line + c;
-        }
-        return line;
+        this.history = new HistoryManager();
     }
 
     @Override
-    public boolean nextCommand() throws IOException {
-        String line = nextLine();
+    public void nextCommand() throws IOException {
+        String line = input.nextLine();
         String[] words = line.split(" ");
+        if (commands.containsKey(words[0])){
+            throw new NoSuchCommandException(line);
+        }
         Command currentCommand = commands.get(words[0]);
 
-        return currentCommand.execute(Arrays.copyOfRange(words, 1, words.length));
+        currentCommand.execute(Arrays.copyOfRange(words, 1, words.length));
 
 //        return false;
     }
 
     @Override
-    public boolean start() {
-        return false;
+    public void start(){
+        ;
     }
 }

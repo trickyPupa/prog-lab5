@@ -4,9 +4,6 @@ public abstract class Command {
     private String name;
     private String description;
 
-    public Command(String name){
-        this.name = name;
-    }
     public Command(String name, String description){
         this.name = name;
         this.description = description;
@@ -20,5 +17,5 @@ public abstract class Command {
         return description;
     }
 
-    public abstract boolean execute(String[] s);
+    public abstract void execute(String[] s);
 }

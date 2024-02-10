@@ -1,7 +1,7 @@
 package technical.commands;
 
 import technical.Command;
-import technical.CommandHandler;
+import technical.managers.CommandHandler;
 
 import java.util.HashMap;
 
@@ -12,11 +12,10 @@ public class HelpCommand extends Command {
     }
 
     @Override
-    public boolean execute(String[] s) {
+    public void execute(String[] s) {
         System.out.println("Список доступных команд.");
         for (String name : commandsList.keySet()){
             System.out.printf("\t%s: \t%s}\n", name, commandsList.get(name).getDescription());
         }
-        return true;
     }
 }

@@ -1,6 +1,6 @@
-import technical.Command;
-import technical.CommandHandler;
-import technical.Handler;
+import technical.managers.CommandHandler;
+import technical.managers.Handler;
+import technical.managers.InputManager;
 
 import java.io.BufferedInputStream;
 import java.io.InputStream;
@@ -18,11 +18,16 @@ public class Main {
 
     public static void command_executing(){
         InputStream input = new BufferedInputStream(System.in);
-        Handler handler = new CommandHandler(input);
+        InputManager inputManager = new InputManager(input);
+        Handler handler = new CommandHandler(inputManager);
 
         try(input){
             while (true){
-                handler.nextCommand();
+                try {
+                    handler.nextCommand();
+                } catch (RuntimeException e){
+                    System.out.println(e.getMessage());
+                }
             }
         }
         catch(Exception e){
