@@ -1,12 +1,14 @@
 package necessary.enums;
 
-public enum MpaaRating {
-    PG,
-    PG_13,
-    NC_17;
+public enum EyeColor {
+    BLUE,
+    YELLOW,
+    ORANGE,
+    WHITE,
+    BROWN;
 
     public static boolean contains(String a){
-        for(MpaaRating s : values()){
+        for(EyeColor s : values()){
             if (s.toString().equals(a)){
                 return true;
             }

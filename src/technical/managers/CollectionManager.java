@@ -7,7 +7,7 @@ import java.util.Vector;
 public class CollectionManager {
     private Vector<Movie> collection;
 
-    CollectionManager(){
+    public CollectionManager(){
         collection = new Vector<>();
     }
 

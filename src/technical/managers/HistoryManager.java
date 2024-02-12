@@ -1,22 +1,22 @@
 package technical.managers;
 
-import technical.Command;
+import technical.commands.abstractions.AbstractCommand;
 
 import java.util.ArrayDeque;
 
 public class HistoryManager {
-    private ArrayDeque<Command> history;
+    private ArrayDeque<AbstractCommand> history;
 
     public HistoryManager(){
         history = new ArrayDeque<>(5);
     }
 
-    public void next(Command c){
+    public void next(AbstractCommand c){
         history.addLast(c);
         history.removeFirst();
     }
 
-    public Command getLast(){
+    public AbstractCommand getLast(){
         return history.getLast();
     }
 }

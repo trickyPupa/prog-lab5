@@ -1,4 +1,4 @@
-package technical.managers;
+package technical.managers.abstractions;
 
 import java.io.IOException;
 

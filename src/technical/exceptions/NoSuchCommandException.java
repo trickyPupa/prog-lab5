@@ -10,6 +10,6 @@ public class NoSuchCommandException extends RuntimeException{
 
     @Override
     public String toString(){
-        return "";
+        return "Не существует команды \"" + this.getMessage() + "\"\nДля справки используйте help";
     }
 }
