@@ -9,6 +9,6 @@ public class WrongArgumentException extends RuntimeException {
 
     @Override
     public String toString() {
-        return getMessage();
+        return "Некорректные аргументы для команды {" + getMessage() + "}.";
     }
 }

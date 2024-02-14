@@ -7,6 +7,7 @@ import technical.managers.abstractions.IInputManager;
 import technical.managers.abstractions.IOutputManager;
 
 import java.io.IOException;
+import java.util.Arrays;
 
 public class Movie implements Comparable {
     private static int id_counter = 0;
@@ -23,14 +24,13 @@ public class Movie implements Comparable {
     private MpaaRating mpaaRating; //Поле не может быть null
     private Person director; //Поле не может быть null
 
-    public Movie(){
+    protected Movie(){
         id_counter++;
         id = id_counter;
         creationDate = java.time.LocalDate.now();
     }
 
-    public void setArgs(String line) {
-        String[] args = line.split(",");
+    public void setArgs(String[] args) {
         for (int i = 0; i < 4; i++){
             switch (i){
                 case 0:
@@ -60,36 +60,35 @@ public class Movie implements Comparable {
         this.coordinates = coordinates;
     }
 
-    public static boolean validateArgs(String s){
-        String[] args = s.split(",");
+    public static boolean validateArgs(String[] args){
         String[] queue = {"str", "int", "Int", "int"};
 
         for (int i = 0; i < 4; i++){
             if (queue[i].equals("str") && args[i].isBlank()){
                 return false;
-            } else if (queue[i].equals("int") && !args[i].strip().matches("[\\d]")) {
+            } else if (queue[i].equals("int") && !args[i].strip().matches("\\d*")) {
                 return false;
-            } else if (queue[i].equals("Int") && !(args[i].isBlank() || args[i].strip().matches("\\d"))) {
+            } else if (queue[i].equals("Int") && !(args[i].isBlank() || args[i].strip().matches("\\d*"))) {
                 return false;
             }
         }
         return true;
     }
 
-    public static Movie createMovie(String line, IInputManager input, IOutputManager output){
+    public static Movie createMovie(String[] args, IInputManager input, IOutputManager output){
         Movie elem = new Movie();
 
-        if (!validateArgs(line)){
+        if (!validateArgs(args)){
             throw new WrongArgumentException();
         }
-        elem.setArgs(line);
+        elem.setArgs(args);
 
         try {
             while (true) {
-                output.print("\nКоординаты фильма - целое число, большее -879, и целое число, не большее 155: ");
+                output.print("\nКоординаты фильма - целое число больше -879, и целое число не больше 155: ");
                 String[] arg = input.nextLine().strip().replace(" ", "").split(",");
 
-                if (!(arg[0].matches("\\d*") && arg[1].matches("\\d*"))){
+                if (!(arg[0].matches("-?\\d*") && arg[1].matches("-?\\d*"))){
                     output.print("Недопустимый формат.");
                 } else {
                     int a = Integer.parseInt(arg[0]);
@@ -126,5 +125,11 @@ public class Movie implements Comparable {
     @Override
     public int compareTo(Object o) {
         return 0;
+    }
+
+    @Override
+    public String toString() {
+        return name + " by " + director.toString() + " with " + oscarsCount + " Oscars and " +
+                goldenPalmCount + " Golden Palms";
     }
 }

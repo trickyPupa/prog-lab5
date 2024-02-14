@@ -17,7 +17,7 @@ public class HelpCommand extends AbstractCommand {
     public void execute(String[] s) {
         System.out.println("Список доступных команд.");
         for (String name : commandsList.keySet()){
-            System.out.printf("\t%s: \t%s}\n", name, commandsList.get(name).getDescription());
+            System.out.printf("\t%s: \t%s\n", name, commandsList.get(name).getDescription());
         }
     }
 }

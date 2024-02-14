@@ -1,19 +1,14 @@
 package technical.managers;
 
 import technical.commands.abstractions.AbstractCommand;
-import technical.commands.abstractions.IInputNeed;
-import technical.commands.implementations.AddCommand;
-import technical.commands.implementations.ExitCommand;
-import technical.commands.implementations.HelpCommand;
-import technical.commands.implementations.SaveCommand;
+import technical.commands.abstractions.Command;
+import technical.commands.implementations.*;
 import technical.exceptions.NoSuchCommandException;
 import technical.managers.abstractions.Handler;
 import technical.managers.abstractions.IInputManager;
 import technical.managers.abstractions.IOutputManager;
 
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.HashMap;
 
 public class CommandHandler extends AbstractCommandHandler implements Handler {
     public static final String[] command_names = {"help", "info", "show", "add", "update id", "remove_by_id",
@@ -25,6 +20,7 @@ public class CommandHandler extends AbstractCommandHandler implements Handler {
         vals.commands.put("save", new SaveCommand(vals));
         vals.commands.put("exit", new ExitCommand(vals));
         vals.commands.put("add", new AddCommand(vals));
+        vals.commands.put("show", new ShowCommand(vals));
     }
 
     public CommandHandler(IInputManager inp, IOutputManager out, CollectionManager col){
@@ -36,14 +32,14 @@ public class CommandHandler extends AbstractCommandHandler implements Handler {
         IInputManager input = vals.getInputManager();
 
         String line = input.nextLine();
-        String[] words = line.split(" ");
+        String commandName = line.contains(" ") ? line.substring(0, line.indexOf(" ")).strip() : line.strip();
 
-        if (vals.commands.containsKey(words[0])){
+        if (!vals.commands.containsKey(commandName)){
             throw new NoSuchCommandException(line);
         }
-        AbstractCommand currentCommand = vals.commands.get(words[0]);
+        Command currentCommand = vals.commands.get(commandName);
 
-        currentCommand.execute(Arrays.copyOfRange(words, 1, words.length));
+        currentCommand.execute(line.substring(line.indexOf(commandName) + commandName.length()).split(","));
     }
 
     @Override

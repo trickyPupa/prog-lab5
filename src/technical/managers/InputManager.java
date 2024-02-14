@@ -4,6 +4,7 @@ import technical.managers.abstractions.IInputManager;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.CharsetDecoder;
 
 public class InputManager implements IInputManager {
     InputStream input;
@@ -15,7 +16,7 @@ public class InputManager implements IInputManager {
     public String nextLine() throws IOException {
         String line = "";
         char c;
-        while ((c = (char)(input.read())) != '\n'){
+        while ((c = (char)input.read()) != '\n'){
             line = line + c;
         }
         return line;

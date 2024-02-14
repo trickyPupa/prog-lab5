@@ -14,4 +14,21 @@ public class CollectionManager {
     public void add(Movie element){
         collection.add(element);
     }
+
+    public String presentView(){
+        if (collection.isEmpty()) return "Коллекция пуста";
+        String res = "Текущая коллекция фильмов:\n";
+
+        for (Movie i : collection){
+            res = res + " - " + i.toString() + "\n";
+        }
+
+        return res;
+    }
+
+    @Override
+    public String toString() {
+        return "collection=" + collection +
+                '}';
+    }
 }
