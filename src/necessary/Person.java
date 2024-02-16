@@ -8,7 +8,13 @@ import technical.managers.abstractions.IOutputManager;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Predicate;
+
+import static technical.Utils.isInt;
+import static technical.Utils.isLong;
 
 public class Person {
     private String name; //Поле не может быть null, Строка не может быть пустой
@@ -128,6 +134,75 @@ public class Person {
                     System.out.println("Неправильный формат аргументов.");
                 }
             }
+            return elem;
+        } catch (IOException e){
+            output.print("Что-то случилось, введите команду заново.");
+            throw new InterruptException();
+        }
+    }
+
+    public static Person createPerson1(IInputManager input, IOutputManager output){
+        Person elem = new Person();
+
+        Map<String, Predicate<String>> args_checkers = new LinkedHashMap<>();
+        args_checkers.put("имя режиссёра", x -> {
+            if (!x.isBlank()){
+                elem.setName(x);
+                return true;
+            }
+            return false;
+        });
+        args_checkers.put("дату рождения режиссёра", x -> {
+            if (x.matches("(0[1-9]|[12][0-9]|3[01]).(0[1-9]|1[012]).(1[89]\\d\\d|20([01]\\d|2[01234]))")){
+
+                String[] temp = x.split("\\.");
+
+                int day = Integer.parseInt(temp[0].strip());
+                int month = Integer.parseInt(temp[1].strip());
+                int year = Integer.parseInt(temp[2].strip());
+
+                elem.setBirthday(new Date(year, month, day));
+                return true;
+            }
+            return false;
+        });
+        args_checkers.put("цвет глаз режиссёра (BLUE, YELLOW, ORANGE, WHITE, BROWN)", x -> {
+            if (EyeColor.contains(x)){
+                elem.setEyeColor(EyeColor.valueOf(x));
+                return true;
+            }
+            return false;
+        });
+        args_checkers.put("цвет волос режиссёра (GREEN, RED, BLUE, YELLOW, ORANGE)", x -> {
+            if (HairColor.contains(x)){
+                elem.setHairColor(HairColor.valueOf(x));
+                return true;
+            }
+            return false;
+        });
+        args_checkers.put("национальность режиссёра (FRANCE, INDIA, VATICAN, THAILAND)", x -> {
+            if (Country.contains(x)){
+                elem.setNationality(Country.valueOf(x));
+                return true;
+            }
+            return false;
+        });
+
+        try{
+            for (String a : args_checkers.keySet()){
+                Predicate<String> check = args_checkers.get(a);
+                output.print("Введите " + a + ":");
+                String line = input.nextLine();
+
+                while (!check.test(line)){
+                    output.print("Некорректные данные.");
+                    output.print("Введите " + a + ":");
+                    line = input.nextLine();
+                }
+            }
+
+            elem.setLocation(Location.createLocation(input, output));
+
             return elem;
         } catch (IOException e){
             output.print("Что-то случилось, введите команду заново.");

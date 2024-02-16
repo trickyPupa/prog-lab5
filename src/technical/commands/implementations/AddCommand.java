@@ -26,7 +26,9 @@ public class AddCommand extends AbstractCommand{
 
     @Override
     public void execute(String[] s) {
-        Movie element = Movie.createMovie(s, shell.getInputManager(), shell.getOutputManager());
+//        Movie element = Movie.createMovie(s, shell.getInputManager(), shell.getOutputManager());
+        Movie element = Movie.createMovie1(shell.getInputManager(), shell.getOutputManager());
+
         try {
             shell.getCollectionManager().add(element);
         } catch (WrongArgumentException e){

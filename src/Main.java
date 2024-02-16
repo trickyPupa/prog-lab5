@@ -1,4 +1,3 @@
-import necessary.Person;
 import technical.exceptions.WrongArgumentException;
 import technical.managers.*;
 import technical.managers.abstractions.Handler;
@@ -26,14 +25,20 @@ public class Main {
 
         Handler handler = new CommandHandler(inputManager, outputManager, collectionManager);
 
-        Person a = Person.createPerson(inputManager, outputManager);
+        try {
+            String a = inputManager.nextLine();
+            System.out.println("вы ввели " + a);
+        } catch (IOException e){
+            System.out.println(e.getMessage());
+        }
 
-        System.out.println(a);
     }
 
     public static void test1(){
-        String[] arg = "   -100, 1000".strip().replace(" ", "").split(",");
-        System.out.println(!(arg[0].matches("-?\\d*") && arg[1].matches("-?\\d*")));
+        String a = "-155";
+
+        System.out.println(a.matches("-?\\d*]"));
+        System.out.println(Integer.parseInt(a));
     }
 
     public static void command_executing(){
