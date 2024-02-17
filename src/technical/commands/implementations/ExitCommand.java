@@ -1,12 +1,12 @@
 package technical.commands.implementations;
 
 import technical.commands.abstractions.AbstractCommand;
-import technical.managers.AbstractCommandHandler;
+import technical.managers.abstractions.AbstractCommandHandler;
 
 public class ExitCommand extends AbstractCommand {
 
     public ExitCommand(AbstractCommandHandler.ShellValuables shell) {
-        super("exit", "Команда для завершения работы.", shell);
+        super("exit", "Команда для завершения работы.", "no", shell);
     }
 
     @Override

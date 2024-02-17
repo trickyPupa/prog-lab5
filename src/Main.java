@@ -1,3 +1,4 @@
+import necessary.Person;
 import technical.exceptions.WrongArgumentException;
 import technical.managers.*;
 import technical.managers.abstractions.Handler;
@@ -7,6 +8,9 @@ import technical.managers.abstractions.IOutputManager;
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Vector;
 
 public class Main {
     public static void main(String[] args) {
@@ -25,20 +29,14 @@ public class Main {
 
         Handler handler = new CommandHandler(inputManager, outputManager, collectionManager);
 
-        try {
-            String a = inputManager.nextLine();
-            System.out.println("вы ввели " + a);
-        } catch (IOException e){
-            System.out.println(e.getMessage());
-        }
+        Person.createPerson1(inputManager, outputManager);
 
     }
 
     public static void test1(){
-        String a = "-155";
-
-        System.out.println(a.matches("-?\\d*]"));
-        System.out.println(Integer.parseInt(a));
+        Vector<Integer> a = new Vector<>();
+        a.add(12);
+        System.out.println(LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss")));
     }
 
     public static void command_executing(){

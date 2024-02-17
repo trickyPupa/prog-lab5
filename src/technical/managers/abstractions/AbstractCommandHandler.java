@@ -1,6 +1,8 @@
-package technical.managers;
+package technical.managers.abstractions;
 
 import technical.commands.abstractions.AbstractCommand;
+import technical.managers.CollectionManager;
+import technical.managers.HistoryManager;
 import technical.managers.abstractions.Handler;
 import technical.managers.abstractions.IInputManager;
 import technical.managers.abstractions.IOutputManager;

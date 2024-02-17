@@ -13,10 +13,14 @@ import java.util.function.Predicate;
 
 import static technical.Utils.*;
 
-public class Movie implements Comparable {
+/**
+ * Класс, хранящий описание фильма.
+ */
+
+public class Movie implements Comparable<Movie> {
     private static int id_counter = 0;
 
-    private Integer id; //Поле не может быть null, Значение поля должно быть больше 0, Значение этого поля должно быть уникальным, Значение этого поля должно генерироваться автоматически
+    private final Integer id; //Поле не может быть null, Значение поля должно быть больше 0, Значение этого поля должно быть уникальным, Значение этого поля должно генерироваться автоматически
     private java.time.LocalDate creationDate; //Поле не может быть null, Значение этого поля должно генерироваться автоматически
 
     private String name; //Поле не может быть null, Строка не может быть пустой
@@ -33,6 +37,20 @@ public class Movie implements Comparable {
         id = id_counter;
         creationDate = java.time.LocalDate.now();
     }
+
+    public void update(Movie newValue){
+        name = newValue.name;
+        oscarsCount = newValue.oscarsCount;
+        goldenPalmCount = newValue.goldenPalmCount;
+        length = newValue.length;
+        coordinates = newValue.coordinates;
+        mpaaRating = newValue.mpaaRating;
+        director = newValue.director;
+    }
+
+    public int getId(){
+        return id;
+    };
 
     private void setArgs(String[] args) {
         for (int i = 0; i < 4; i++){
@@ -80,6 +98,11 @@ public class Movie implements Comparable {
         this.coordinates = coordinates;
     }
 
+    /**
+     * Метод проверяет корректность аргументов, переданных для создания объекта.
+     * @param args - переданные аргументы
+     * @return true, если аргументы корректны, иначе - false
+     */
     public static boolean validateArgs(String[] args){
         String[] queue = {"str", "int", "Int", "int"};
 
@@ -142,11 +165,17 @@ public class Movie implements Comparable {
         return elem;
     }
 
+    /**
+     * Создает и возвращает объект {@see Movie} используя переданный поток ввода
+     * @param input - экземпляр класса, реализующего {@see IInputManager} для считывания аргументов
+     * @param output - экземпляр класса, реализующего {@see IOutputManager} для общения с пользователем
+     * @return {@see Movie}
+     */
     public static Movie createMovie1(IInputManager input, IOutputManager output){
         Movie elem = new Movie();
 
         Map<String, Predicate<String>> args_checkers = new LinkedHashMap<>();
-        args_checkers.put("имя", x -> {
+        args_checkers.put("название", x -> {
             if (!x.isBlank()){
                 elem.setName(x);
                 return true;
@@ -209,13 +238,13 @@ public class Movie implements Comparable {
     }
 
     @Override
-    public int compareTo(Object o) {
-        return 0;
+    public String toString() {
+        return String.format("%d: %s (%d) by %s with %d Oscars and %d Golden Palms.", id, name,
+                creationDate.getYear(), director.toString(), oscarsCount, goldenPalmCount);
     }
 
     @Override
-    public String toString() {
-        return name + " by " + director.toString() + " with " + oscarsCount + " Oscars and " +
-                goldenPalmCount + " Golden Palms";
+    public int compareTo(Movie o) {
+        return this.creationDate == o.creationDate ? this.creationDate.compareTo(o.creationDate) : this.name.compareTo(o.name);
     }
 }

@@ -1,7 +1,9 @@
 package technical.commands.abstractions;
 
-import technical.managers.CollectionManager;
 
+/**
+ * Родительский интерфейс для всех команд.
+ */
 public interface Command {
     public void execute(String[] s);
 }

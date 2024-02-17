@@ -16,7 +16,7 @@ import java.util.function.Predicate;
 import static technical.Utils.isInt;
 import static technical.Utils.isLong;
 
-public class Person {
+public class Person implements Comparable<Person> {
     private String name; //Поле не может быть null, Строка не может быть пустой
     private java.util.Date birthday; //Поле не может быть null
     private EyeColor eyeColor; //Поле может быть null
@@ -153,7 +153,7 @@ public class Person {
             return false;
         });
         args_checkers.put("дату рождения режиссёра", x -> {
-            if (x.matches("(0[1-9]|[12][0-9]|3[01]).(0[1-9]|1[012]).(1[89]\\d\\d|20([01]\\d|2[01234]))")){
+            if (x.matches("(0[1-9]|[12][0-9]|3[01])\\.(0[1-9]|1[012])\\.(1[89]\\d\\d|20([01]\\d|2[01234]))")){
 
                 String[] temp = x.split("\\.");
 
@@ -213,5 +213,10 @@ public class Person {
     @Override
     public String toString() {
         return name + " (" + nationality.name() + ") born in " + birthday.getYear();
+    }
+
+    @Override
+    public int compareTo(Person o) {
+        return this.name.compareTo(o.name);
     }
 }

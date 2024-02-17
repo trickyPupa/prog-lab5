@@ -1,9 +1,9 @@
 package technical.managers;
 
-import technical.commands.abstractions.AbstractCommand;
 import technical.commands.abstractions.Command;
 import technical.commands.implementations.*;
 import technical.exceptions.NoSuchCommandException;
+import technical.managers.abstractions.AbstractCommandHandler;
 import technical.managers.abstractions.Handler;
 import technical.managers.abstractions.IInputManager;
 import technical.managers.abstractions.IOutputManager;
@@ -21,6 +21,9 @@ public class CommandHandler extends AbstractCommandHandler implements Handler {
         vals.commands.put("exit", new ExitCommand(vals));
         vals.commands.put("add", new AddCommand(vals));
         vals.commands.put("show", new ShowCommand(vals));
+        vals.commands.put("info", new InfoCommand(vals));
+        vals.commands.put("clear", new ClearCommand(vals));
+        vals.commands.put("update", new UpdateCommand(vals));
     }
 
     public CommandHandler(IInputManager inp, IOutputManager out, CollectionManager col){
@@ -31,15 +34,23 @@ public class CommandHandler extends AbstractCommandHandler implements Handler {
     public void nextCommand() throws IOException {
         IInputManager input = vals.getInputManager();
 
-        String line = input.nextLine();
-        String commandName = line.contains(" ") ? line.substring(0, line.indexOf(" ")).strip() : line.strip();
+        String line = input.nextLine().strip();
+        String commandName;
+        String[] args;
+        if (line.contains(" ")){
+            commandName = line.substring(0, line.indexOf(" ")).strip();
+            args = line.substring(1 + commandName.length()).split(" ");
+        } else{
+            commandName = line.strip();
+            args = new String[0];
+        }
 
         if (!vals.commands.containsKey(commandName)){
             throw new NoSuchCommandException(line);
         }
         Command currentCommand = vals.commands.get(commandName);
 
-        currentCommand.execute(line.substring(line.indexOf(commandName) + commandName.length()).split(","));
+        currentCommand.execute(args);
     }
 
     @Override
