@@ -8,6 +8,7 @@ import technical.managers.abstractions.Handler;
 import technical.managers.abstractions.IInputManager;
 import technical.managers.abstractions.IOutputManager;
 
+import java.io.File;
 import java.io.IOException;
 
 public class CommandHandler extends AbstractCommandHandler implements Handler {
@@ -24,10 +25,11 @@ public class CommandHandler extends AbstractCommandHandler implements Handler {
         vals.commands.put("info", new InfoCommand(vals));
         vals.commands.put("clear", new ClearCommand(vals));
         vals.commands.put("update", new UpdateCommand(vals));
+        vals.commands.put("history", new HistoryCommand(vals));
     }
 
-    public CommandHandler(IInputManager inp, IOutputManager out, CollectionManager col){
-        super(inp, out, col);
+    public CommandHandler(IInputManager inp, IOutputManager out, CollectionManager col, FileManager fm){
+        super(inp, out, col, fm);
     }
 
     @Override
@@ -51,6 +53,7 @@ public class CommandHandler extends AbstractCommandHandler implements Handler {
         Command currentCommand = vals.commands.get(commandName);
 
         currentCommand.execute(args);
+        vals.getHistoryManager().next(currentCommand);
     }
 
     @Override

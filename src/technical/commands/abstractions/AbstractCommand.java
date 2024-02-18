@@ -19,6 +19,7 @@ public abstract class AbstractCommand implements Command{
         this.shell = shell;
     }
 
+    @Override
     public String getName() {
         return name;
     }

@@ -9,10 +9,14 @@ import java.util.concurrent.atomic.LongAccumulator;
 
 import static technical.Utils.*;
 
-public class Location {
+public class Location implements Checkable {
     private float x;
     private Long y;
     private Integer z;
+
+    public Location(){
+
+    }
 
     public Location(float a, long b, int c){
         x = a;
@@ -63,5 +67,10 @@ public class Location {
             output.print("Что-то случилось, введите команду заново.");
             throw new InterruptException();
         }
+    }
+
+    @Override
+    public boolean checkItself(){
+        return y != null && z != null;
     }
 }

@@ -8,7 +8,7 @@ import java.io.IOException;
 import static technical.Utils.isInt;
 import static technical.Utils.isLong;
 
-public class Coordinates {
+public class Coordinates implements Checkable {
     private int x;  // > -879
     private long y;  // <= 155
 
@@ -55,5 +55,10 @@ public class Coordinates {
         }
 
         return elem;
+    }
+
+    @Override
+    public boolean checkItself(){
+        return x > -879 && y <= 155;
     }
 }

@@ -6,17 +6,15 @@ import technical.managers.abstractions.IInputManager;
 import technical.managers.abstractions.IOutputManager;
 
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Predicate;
 
 import static technical.Utils.isInt;
 import static technical.Utils.isLong;
 
-public class Person implements Comparable<Person> {
+public class Person implements Comparable<Person>, Checkable {
     private String name; //Поле не может быть null, Строка не может быть пустой
     private java.util.Date birthday; //Поле не может быть null
     private EyeColor eyeColor; //Поле может быть null
@@ -211,8 +209,13 @@ public class Person implements Comparable<Person> {
     }
 
     @Override
+    public boolean checkItself(){
+        return name != null && !name.isBlank() && birthday != null && location.checkItself();
+    }
+
+    @Override
     public String toString() {
-        return name + " (" + nationality.name() + ") born in " + birthday.getYear();
+        return name + " (" + nationality.name() + "), born in " + birthday.getYear();
     }
 
     @Override

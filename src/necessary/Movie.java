@@ -1,7 +1,10 @@
 package necessary;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import necessary.enums.*;
 import technical.exceptions.WrongArgumentException;
+import technical.managers.FileManager;
 import technical.managers.OutputManager;
 import technical.managers.abstractions.IInputManager;
 import technical.managers.abstractions.IOutputManager;
@@ -17,10 +20,12 @@ import static technical.Utils.*;
  * Класс, хранящий описание фильма.
  */
 
-public class Movie implements Comparable<Movie> {
+public class Movie implements Comparable<Movie>, Checkable {
     private static int id_counter = 0;
 
     private final Integer id; //Поле не может быть null, Значение поля должно быть больше 0, Значение этого поля должно быть уникальным, Значение этого поля должно генерироваться автоматически
+    @JsonSerialize(using = FileManager.CustomLocalDateSerializer.class)
+    @JsonDeserialize(using = FileManager.CustomLocalDateDeserializer.class)
     private java.time.LocalDate creationDate; //Поле не может быть null, Значение этого поля должно генерироваться автоматически
 
     private String name; //Поле не может быть null, Строка не может быть пустой
@@ -189,9 +194,12 @@ public class Movie implements Comparable<Movie> {
             }
             return false;
         });
-        args_checkers.put("количество золотых пальмовых ветвей (может быть 0)", x -> {
-            if (isInt(x)){
+        args_checkers.put("количество золотых пальмовых ветвей (необязательно)", x -> {
+            if (isInt(x) && !x.equals("0")){
                 elem.setGoldenPalmCount(Integer.parseInt(x));
+                return true;
+            } else if (x.isEmpty()){
+                elem.setGoldenPalmCount(null);
                 return true;
             }
             return false;
@@ -238,9 +246,15 @@ public class Movie implements Comparable<Movie> {
     }
 
     @Override
+    public boolean checkItself(){
+        return !name.isBlank() && oscarsCount > 0 && (goldenPalmCount == null || goldenPalmCount > 0)
+                && length > 0 && coordinates.checkItself() && director.checkItself();
+    }
+
+    @Override
     public String toString() {
-        return String.format("%d: %s (%d) by %s with %d Oscars and %d Golden Palms.", id, name,
-                creationDate.getYear(), director.toString(), oscarsCount, goldenPalmCount);
+        return String.format("%d: %s (%d) with %d Oscars and %d Golden Palms by %s.", id, name,
+                creationDate.getYear(), oscarsCount, goldenPalmCount, director.toString());
     }
 
     @Override
