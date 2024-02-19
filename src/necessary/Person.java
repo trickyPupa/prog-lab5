@@ -1,11 +1,14 @@
 package necessary;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import necessary.enums.*;
 import technical.exceptions.InterruptException;
+import technical.managers.FileManager;
 import technical.managers.abstractions.IInputManager;
 import technical.managers.abstractions.IOutputManager;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -16,6 +19,7 @@ import static technical.Utils.isLong;
 
 public class Person implements Comparable<Person>, Checkable {
     private String name; //Поле не может быть null, Строка не может быть пустой
+//    @JsonSerialize(using = FileManager.CustomDateSerializer.class)
     private java.util.Date birthday; //Поле не может быть null
     private EyeColor eyeColor; //Поле может быть null
     private HairColor hairColor; //Поле не может быть null
@@ -159,7 +163,7 @@ public class Person implements Comparable<Person>, Checkable {
                 int month = Integer.parseInt(temp[1].strip());
                 int year = Integer.parseInt(temp[2].strip());
 
-                elem.setBirthday(new Date(year, month, day));
+                elem.setBirthday(new Date(year - 1900, month, day));
                 return true;
             }
             return false;
@@ -191,6 +195,9 @@ public class Person implements Comparable<Person>, Checkable {
                 Predicate<String> check = args_checkers.get(a);
                 output.print("Введите " + a + ":");
                 String line = input.nextLine();
+                if (line.equals("exit")){
+                    throw new InterruptException();
+                }
 
                 while (!check.test(line)){
                     output.print("Некорректные данные.");
@@ -215,7 +222,9 @@ public class Person implements Comparable<Person>, Checkable {
 
     @Override
     public String toString() {
-        return name + " (" + nationality.name() + "), born in " + birthday.getYear();
+//        return name + " (" + nationality.name() + "), born in " + birthday.getYear();
+        return name + " (" + nationality.name() + "), born in " +
+                new SimpleDateFormat("dd.MM.yyyy").format(birthday);
     }
 
     @Override

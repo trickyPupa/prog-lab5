@@ -5,10 +5,11 @@ import technical.managers.abstractions.IOutputManager;
 
 import java.io.IOException;
 
+import static java.lang.Math.sqrt;
 import static technical.Utils.isInt;
 import static technical.Utils.isLong;
 
-public class Coordinates implements Checkable {
+public class Coordinates implements Checkable, Comparable<Coordinates> {
     private int x;  // > -879
     private long y;  // <= 155
 
@@ -60,5 +61,21 @@ public class Coordinates implements Checkable {
     @Override
     public boolean checkItself(){
         return x > -879 && y <= 155;
+    }
+
+    @Override
+    public int compareTo(Coordinates o) {
+        double dif = sqrt((long) this.x * this.x + this.y * this.y) - sqrt((long) o.x * o.x + o.y * o.y);
+        if (dif == 0){
+            return 0;
+        } else if (dif < 0){
+            return -1;
+        }
+        return 1;
+    }
+
+    @Override
+    public String toString() {
+        return "(" + x + ", " + y + ")";
     }
 }

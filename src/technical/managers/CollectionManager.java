@@ -10,7 +10,7 @@ import java.util.Map;
 import java.util.Vector;
 
 public class CollectionManager {
-    private final Vector<Movie> collection;
+    private Vector<Movie> collection;
     private final LocalDateTime creationDate;
 
     public CollectionManager(){
@@ -18,8 +18,25 @@ public class CollectionManager {
         creationDate = LocalDateTime.now();
     }
 
+    public CollectionManager(Vector<Movie> vec){
+        collection = new Vector<>(vec);
+        creationDate = LocalDateTime.now();
+    }
+
     public void add(Movie element){
         collection.add(element);
+    }
+
+    public void remove(int i){
+        collection.remove(i);
+    }
+
+    public void remove(Movie i){
+        collection.remove(i);
+    }
+
+    public void removeFirst(){
+        collection.remove(0);
     }
 
     public String presentView(){

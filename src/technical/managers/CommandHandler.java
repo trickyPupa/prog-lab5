@@ -26,6 +26,12 @@ public class CommandHandler extends AbstractCommandHandler implements Handler {
         vals.commands.put("clear", new ClearCommand(vals));
         vals.commands.put("update", new UpdateCommand(vals));
         vals.commands.put("history", new HistoryCommand(vals));
+        vals.commands.put("remove_first", new RemoveFirstCommand(vals));
+        vals.commands.put("remove_by_id", new RemoveByIdCommand(vals));
+        vals.commands.put("filter_by_golden_palm_count", new FilterByGoldenPalmCountCommand(vals));
+        vals.commands.put("min_by_coordinates", new MinByCoordinatesCommand(vals));
+        vals.commands.put("remove_all_by_golden_palm_count", new RemoveAllByGoldenPalmCountCommand(vals));
+        vals.commands.put("remove_lower", new RemoveLowerCommand(vals));
     }
 
     public CommandHandler(IInputManager inp, IOutputManager out, CollectionManager col, FileManager fm){

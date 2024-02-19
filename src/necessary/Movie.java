@@ -3,6 +3,7 @@ package necessary;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import necessary.enums.*;
+import technical.exceptions.InterruptException;
 import technical.exceptions.WrongArgumentException;
 import technical.managers.FileManager;
 import technical.managers.OutputManager;
@@ -56,6 +57,14 @@ public class Movie implements Comparable<Movie>, Checkable {
     public int getId(){
         return id;
     };
+
+    public Integer getGoldenPalmCount(){
+        return goldenPalmCount;
+    }
+
+    public Coordinates getCoordinates() {
+        return coordinates;
+    }
 
     private void setArgs(String[] args) {
         for (int i = 0; i < 4; i++){
@@ -227,6 +236,9 @@ public class Movie implements Comparable<Movie>, Checkable {
                 Predicate<String> check = args_checkers.get(a);
                 output.print("Введите " + a + ":");
                 String line = input.nextLine();
+                if (line.equals("exit")){
+                    throw new InterruptException();
+                }
 
                 while (!check.test(line)){
                     output.print("Некорректные данные.");
@@ -253,12 +265,13 @@ public class Movie implements Comparable<Movie>, Checkable {
 
     @Override
     public String toString() {
-        return String.format("%d: %s (%d) with %d Oscars and %d Golden Palms by %s.", id, name,
-                creationDate.getYear(), oscarsCount, goldenPalmCount, director.toString());
+        return String.format("%d: %s (%s; rating - %s; coordinates - %s) with %d Oscars and %d Golden Palms by %s.",
+                id, name, creationDate, mpaaRating.name(), coordinates.toString(), oscarsCount, goldenPalmCount,
+                director.toString());
     }
 
     @Override
     public int compareTo(Movie o) {
-        return this.creationDate == o.creationDate ? this.creationDate.compareTo(o.creationDate) : this.name.compareTo(o.name);
+        return this.creationDate != o.creationDate ? this.creationDate.compareTo(o.creationDate) : this.name.compareTo(o.name);
     }
 }

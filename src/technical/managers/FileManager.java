@@ -5,11 +5,9 @@ import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.exc.StreamReadException;
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.DeserializationContext;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.databind.SerializerProvider;
+import com.fasterxml.jackson.databind.*;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 import necessary.Movie;
@@ -20,8 +18,10 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.Date;
 import java.util.Vector;
 
 public class FileManager {
@@ -45,7 +45,22 @@ public class FileManager {
             gen.writeString(formatter.format(value));
         }
     }
+    /*public static class CustomDateSerializer extends StdSerializer<Date> {
+        private static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
 
+        public CustomDateSerializer() {
+            this(null);
+        }
+        public CustomDateSerializer(Class<Date> t) {
+            super(t);
+        }
+
+        @Override
+        public void serialize(Date value, JsonGenerator gen, SerializerProvider arg2)
+                throws IOException, JsonProcessingException {
+            gen.writeString(new SimpleDateFormat("dd.MM.yyyy").format(value));
+        }
+    }*/
     public static class CustomLocalDateDeserializer extends StdDeserializer<LocalDate> {
 
         public CustomLocalDateDeserializer() {
@@ -93,23 +108,30 @@ public class FileManager {
         return mapper.readValue(file, Movie.class);
     }
 
-    public Vector<Movie> collectionFromFile() throws IOException {
-        TypeReference<Vector<Movie>> type = new TypeReference<>() {};
-
-        Vector<Movie> given_vec = mapper.readValue(file, type);
-        Vector<Movie> ok_vec = new Vector<>(given_vec);
-        for (Movie i : given_vec){
-            if(!i.checkItself()){
-                ok_vec.remove(i);
+    public Vector<Movie> collectionFromFile() {
+        try {
+            TypeReference<Vector<Movie>> type = new TypeReference<>() {
+            };
+            Vector<Movie> given_vec = mapper.readValue(file, type);
+            Vector<Movie> ok_vec = new Vector<>(given_vec);
+            for (Movie i : given_vec) {
+                if (!i.checkItself()) {
+                    ok_vec.remove(i);
+                }
             }
+
+            if (ok_vec.isEmpty()){
+                throw new FileException("Файл не содержит корректных данных. Коллекция не была изменена.");
+            }
+//            else if(ok_vec.size() != given_vec.size()) {
+//                throw new PartlyCorrectDataFileException("Некоторые данные не были загружены.");
+//            }
+            return ok_vec;
+        } catch (StreamReadException | DatabindException e) {
+            throw new RuntimeException("Файл содержит некорректные данные.");
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
-        if (ok_vec.isEmpty()){
-            throw new FileException("Файл не содержит корректных данных. Коллекция не была изменена.");
-        }
-//        else if(ok_vec.size() != given_vec.size()){
-//            throw new PartlyCorrectDataFileException("Некоторые данные не были загружены.");
-//        }
-        return ok_vec;
     }
 
     public void writeToFile(Object o) throws JsonProcessingException {

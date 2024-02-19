@@ -1,8 +1,11 @@
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import necessary.Movie;
 import necessary.Person;
 
 import technical.exceptions.FileException;
+import technical.exceptions.InterruptException;
+import technical.exceptions.NoSuchCommandException;
 import technical.exceptions.WrongArgumentException;
 import technical.managers.*;
 import technical.managers.abstractions.Handler;
@@ -20,34 +23,36 @@ import java.util.Vector;
 
 public class Main {
     public static void main(String[] args) {
-        test();
+//        test();
 
 //        test1();
 
-//        command_executing(args);
+        command_executing(args);
     }
 
     public static void test(){
-        ;
+        String filename = "C:\\Users\\timof\\IdeaProjects\\prog-lab5\\data1.json";
+        try(InputStream input = new BufferedInputStream(System.in)) {
+            IInputManager inputManager = new InputManager(input);
+            IOutputManager outputManager = new OutputManager();
+            CollectionManager collectionManager = new CollectionManager();
+            FileManager fileManager = new FileManager(filename);
+
+            Handler handler = new CommandHandler(inputManager, outputManager, collectionManager, fileManager);
+
+            Vector<Movie> vec = fileManager.collectionFromFile();
+            System.out.println(vec);
+            fileManager.writeToFile(vec);
+
+        } catch (RuntimeException e){
+            System.out.println(e.getMessage());
+        } catch (IOException e){
+            System.out.println(e);
+        }
     }
 
     public static void test1(){
-        InputStream input = new BufferedInputStream(System.in);
-        IInputManager inputManager = new InputManager(input);
-        IOutputManager outputManager = new OutputManager();
-
-        Movie m = Movie.createMovie1(inputManager, outputManager);
-        System.out.println(m);
-//        FileManager a = new FileManager();
-
-//        try (FileWriter fw = new FileWriter(new File("C:\\Users\\timof\\IdeaProjects\\prog-lab5\\data.json"))) {
-////            fw.write(a.elemToFile(m));
-//            Vector<Movie> vec = new Vector<>();
-//            vec.add(m);
-//            fw.write(a.objectToFile(vec));
-//        } catch (IOException e) {
-//            throw new RuntimeException(e);
-//        }
+        System.out.println(Integer.parseInt(""));
     }
 
     public static void command_executing(String[] args){
@@ -58,8 +63,9 @@ public class Main {
         try(InputStream input = new BufferedInputStream(System.in)){
             IInputManager inputManager = new InputManager(input);
             IOutputManager outputManager = new OutputManager();
-            CollectionManager collectionManager = new CollectionManager();
             FileManager fileManager = new FileManager(filename);
+            //CollectionManager collectionManager = new CollectionManager();
+            CollectionManager collectionManager = new CollectionManager(fileManager.collectionFromFile());
 
             Handler handler = new CommandHandler(inputManager, outputManager, collectionManager, fileManager);
 
@@ -68,8 +74,12 @@ public class Main {
                     handler.nextCommand();
                 } catch (WrongArgumentException e){
                     outputManager.print(e.toString());
+                } catch (InterruptException e){
+                    outputManager.print("Ввод данных остановлен.");
+                } catch (NoSuchCommandException e){
+                    outputManager.print("Нет доступной команды " + e.getMessage() + ".");
                 } catch (RuntimeException e){
-                    System.out.println(e.getMessage());
+                    outputManager.print(e.getMessage());
                 }
             }
         }
@@ -86,6 +96,4 @@ public class Main {
             System.out.println(e.getMessage());
         }
     }
-
-    // maven посмотреть (авто сборка jar)
 }
