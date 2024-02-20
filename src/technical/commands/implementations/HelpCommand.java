@@ -4,10 +4,10 @@ import technical.commands.abstractions.AbstractCommand;
 import technical.managers.abstractions.AbstractCommandHandler;
 import technical.managers.abstractions.IOutputManager;
 
-import java.util.HashMap;
+import java.util.Map;
 
 public class HelpCommand extends AbstractCommand {
-    private final HashMap<String, AbstractCommand> commandsList = shell.commands;
+    private final Map<String, AbstractCommand> commandsList = shell.commands;
     public HelpCommand(AbstractCommandHandler.ShellValuables shell){
         super("help", "Команда для вывода справки по всем доступным командам.", "no", shell);
     }

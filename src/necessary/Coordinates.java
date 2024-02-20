@@ -1,5 +1,6 @@
 package necessary;
 
+import technical.exceptions.InterruptException;
 import technical.managers.abstractions.IInputManager;
 import technical.managers.abstractions.IOutputManager;
 
@@ -34,6 +35,9 @@ public class Coordinates implements Checkable, Comparable<Coordinates> {
             while(true) {
                 output.print("Введиите координату X фильма (целое число больше -879): ");
                 String line = input.nextLine();
+                if (line == null || line.equals("exit")){
+                    throw new InterruptException();
+                }
                 if (isInt(line) && Integer.parseInt(line) > -879){
                     elem.setX(Integer.parseInt(line));
                     break;
@@ -44,6 +48,9 @@ public class Coordinates implements Checkable, Comparable<Coordinates> {
             while(true) {
                 output.print("Введиите координату Y фильма (целое число не больше 155): ");
                 String line = input.nextLine();
+                if (line == null || line.equals("exit")){
+                    throw new InterruptException();
+                }
                 if (isLong(line) && Long.parseLong(line) <= 155){
                     elem.setY(Long.parseLong(line));
                     break;

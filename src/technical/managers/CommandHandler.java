@@ -10,12 +10,13 @@ import technical.managers.abstractions.IOutputManager;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.Reader;
 
+/**
+ * Класс - обработчик команд программы; считывает команды из {@link IInputManager} и провоцирует их исполнение.
+ */
 public class CommandHandler extends AbstractCommandHandler implements Handler {
-    public static final String[] command_names = {"help", "info", "show", "add", "update id", "remove_by_id",
-            "clear", "save", "execute_script", "exit", "remove_first", "remove_lower", "history",
-            "remove_all_by_golden_palm_count", "min_by_coordinates", "filter_by_golden_palm_count"};
-
     {
         vals.commands.put("help", new HelpCommand(vals));
         vals.commands.put("save", new SaveCommand(vals));
@@ -32,6 +33,7 @@ public class CommandHandler extends AbstractCommandHandler implements Handler {
         vals.commands.put("min_by_coordinates", new MinByCoordinatesCommand(vals));
         vals.commands.put("remove_all_by_golden_palm_count", new RemoveAllByGoldenPalmCountCommand(vals));
         vals.commands.put("remove_lower", new RemoveLowerCommand(vals));
+        vals.commands.put("execute_script", new ExecuteScriptCommand(vals));
     }
 
     public CommandHandler(IInputManager inp, IOutputManager out, CollectionManager col, FileManager fm){
@@ -39,10 +41,7 @@ public class CommandHandler extends AbstractCommandHandler implements Handler {
     }
 
     @Override
-    public void nextCommand() throws IOException {
-        IInputManager input = vals.getInputManager();
-
-        String line = input.nextLine().strip();
+    public void nextCommand(String line) {
         String commandName;
         String[] args;
         if (line.contains(" ")){
@@ -63,7 +62,11 @@ public class CommandHandler extends AbstractCommandHandler implements Handler {
     }
 
     @Override
-    public void start(){
-        ;
+    public void nextCommand() throws IOException {
+        IInputManager input = vals.getInputManager();
+
+        String line = input.nextLine().strip();
+
+        nextCommand(line);
     }
 }

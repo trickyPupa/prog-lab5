@@ -6,5 +6,10 @@ package technical.commands.abstractions;
  */
 public interface Command {
     String getName();
+
+    /**
+     * Исполнение логики команды.
+     * @param s - аргументы, передаваемые команде.
+     */
     void execute(String[] s);
 }

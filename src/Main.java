@@ -1,25 +1,11 @@
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonMappingException;
-import necessary.Movie;
-import necessary.Person;
-
-import technical.exceptions.FileException;
-import technical.exceptions.InterruptException;
-import technical.exceptions.NoSuchCommandException;
-import technical.exceptions.WrongArgumentException;
+import technical.exceptions.*;
 import technical.managers.*;
 import technical.managers.abstractions.Handler;
 import technical.managers.abstractions.IInputManager;
 import technical.managers.abstractions.IOutputManager;
 
 import java.io.*;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.Date;
-import java.util.SortedMap;
-import java.util.Vector;
+
 
 public class Main {
     public static void main(String[] args) {
@@ -31,7 +17,7 @@ public class Main {
     }
 
     public static void test(){
-        String filename = "C:\\Users\\timof\\IdeaProjects\\prog-lab5\\data1.json";
+        String filename = "C:\\Users\\timof\\IdeaProjects\\prog-lab5\\data\\data1.json";
         try(InputStream input = new BufferedInputStream(System.in)) {
             IInputManager inputManager = new InputManager(input);
             IOutputManager outputManager = new OutputManager();
@@ -40,9 +26,14 @@ public class Main {
 
             Handler handler = new CommandHandler(inputManager, outputManager, collectionManager, fileManager);
 
-            Vector<Movie> vec = fileManager.collectionFromFile();
-            System.out.println(vec);
-            fileManager.writeToFile(vec);
+            inputManager.setTemporaryInput(new FileReader(new File("C:\\Users\\timof\\IdeaProjects\\prog-lab5\\data\\script.txt")));
+            while(true) {
+
+                System.out.println("'" + inputManager.nextLine() + "'");
+                if (inputManager.nextLine() == null){
+                    break;
+                }
+            }
 
         } catch (RuntimeException e){
             System.out.println(e.getMessage());
@@ -52,7 +43,7 @@ public class Main {
     }
 
     public static void test1(){
-        System.out.println(Integer.parseInt(""));
+        System.out.println("12345678901234".substring(14));
     }
 
     public static void command_executing(String[] args){
@@ -77,7 +68,10 @@ public class Main {
                 } catch (InterruptException e){
                     outputManager.print("Ввод данных остановлен.");
                 } catch (NoSuchCommandException e){
-                    outputManager.print("Нет доступной команды " + e.getMessage() + ".");
+                    outputManager.print("Нет доступной команды.");
+//                    outputManager.print(e.getMessage());
+                } catch (RecursionException e) {
+                    outputManager.print("Рекурсия в исполняемом файле.");
                 } catch (RuntimeException e){
                     outputManager.print(e.getMessage());
                 }
@@ -88,7 +82,7 @@ public class Main {
             System.out.println(e.getMessage());
         }
         catch(IOException e){
-            System.out.println("Что-то пошло не так при вводе данных.");
+            System.out.println("Ошибка при чтении данных");
             System.out.println(e.getMessage());
         }
         catch(Exception e){

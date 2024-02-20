@@ -3,35 +3,77 @@ package technical.managers;
 import technical.managers.abstractions.IInputManager;
 
 import java.io.*;
-import java.nio.charset.CharsetDecoder;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
 
+/**
+ * Конкретный класс реализует {@link IInputManager}, осуществляет доставку входных данных программе из различных источников.
+ */
 public class InputManager implements IInputManager {
-    InputStream input;
-    Reader normalInput;
+    protected InputStream input;
+    protected BufferedReader normalInput;
+    protected BufferedReader temporaryInput;
+
     public InputManager(InputStream input){
         this.input = input;
-        normalInput = new InputStreamReader(input, StandardCharsets.UTF_8);
+        normalInput = new BufferedReader(new InputStreamReader(input, StandardCharsets.UTF_8));
     }
 
+    public InputManager(Reader input){
+        normalInput = new BufferedReader(input);
+    }
+
+    /**
+     * @return Возвращает следующую строку входных данных их текущего потока.
+     * @throws IOException - если происходит ошибка ввода/вывода
+     */
     @Override
     public String nextLine() throws IOException {
         String line = "";
-        char c;
-        while ((c = (char)normalInput.read()) != '\n'){
-            line = line + c;
+        int c;
+
+//        while ((char)(c = currentInput.read()) != '\n' && (char)c != '\r'){
+//            if (c == -1) {
+//                currentInput = normalInput;
+//                return line;
+//            }
+//            line = line + (char)c;
+//        }
+//        return line.strip();
+
+        if (temporaryInput != null){
+            if ((line = temporaryInput.readLine()) != null) return line;
+            else temporaryInput = null;
         }
-        return line.strip();
+
+        return normalInput.readLine().strip();
+    }
+
+    /*public String nextWord() throws IOException {
+        String word = "";
+        int c;
+        while (true){
+            if (temporaryInput == null || (c = temporaryInput.read()) == -1) {
+//                (char) (c = (normalInput.read())) != ' '
+                c = normalInput.read();
+            }
+
+            if (c == -1 || (char) c == '\n' || (char) c == ' ') return word.strip();
+            word = word + (char)c;
+        }
+//        return word;
+    }*/
+
+    /**
+     * Устанавливает поток, из которого требуется читать данные в обход основного. Когда поток исчерпается, произойдет возвращение к основному.
+     * @param input новый поток
+     */
+    @Override
+    public void setTemporaryInput(Reader input){
+        temporaryInput = new BufferedReader(input);
     }
 
     @Override
-    public String nextWord() throws IOException {
-        String word = "";
-        char c;
-        while ((c = (char)(normalInput.read())) != ' '){
-            word = c == '\n' ? word + c : word;
-        }
-        return word;
+    public void setTemporaryInput(InputStream input) {
+        temporaryInput = new BufferedReader(new InputStreamReader(input, StandardCharsets.UTF_8));
     }
 }

@@ -4,21 +4,20 @@ import technical.commands.abstractions.AbstractCommand;
 import technical.managers.CollectionManager;
 import technical.managers.FileManager;
 import technical.managers.HistoryManager;
-import technical.managers.abstractions.Handler;
-import technical.managers.abstractions.IInputManager;
-import technical.managers.abstractions.IOutputManager;
 
+import java.io.IOException;
 import java.util.HashMap;
+import java.util.Map;
 
 public abstract class AbstractCommandHandler implements Handler {
     public class ShellValuables {
-        private final IInputManager inputManager;
-        private final IOutputManager outputManager;
+        private IInputManager inputManager;
+        private IOutputManager outputManager;
         private final HistoryManager historyManager;
-        private final CollectionManager collectionManager;
-        private final FileManager fileManager;
+        private CollectionManager collectionManager;
+        private FileManager fileManager;
 
-        public final HashMap<String, AbstractCommand> commands = new HashMap<>();
+        public final Map<String, AbstractCommand> commands = new HashMap<>();
 
         public ShellValuables(IInputManager inp, IOutputManager out, CollectionManager col,
                               FileManager fm, HistoryManager history){
@@ -47,6 +46,10 @@ public abstract class AbstractCommandHandler implements Handler {
 
         public FileManager getFileManager() {
             return fileManager;
+        }
+
+        public Handler getCommandHander(){
+            return AbstractCommandHandler.this;
         }
     }
 

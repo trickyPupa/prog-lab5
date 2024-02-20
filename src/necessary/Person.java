@@ -52,6 +52,7 @@ public class Person implements Comparable<Person>, Checkable {
         this.location = location;
     }
 
+    @Deprecated
     public static Person createPerson(IInputManager input, IOutputManager output){
         Person elem = new Person();
 
@@ -195,7 +196,7 @@ public class Person implements Comparable<Person>, Checkable {
                 Predicate<String> check = args_checkers.get(a);
                 output.print("Введите " + a + ":");
                 String line = input.nextLine();
-                if (line.equals("exit")){
+                if (line == null || line.equals("exit")){
                     throw new InterruptException();
                 }
 

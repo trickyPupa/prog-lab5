@@ -18,7 +18,7 @@ public class HistoryCommand extends AbstractCommand {
 
         output.print("[");
         for(Command i : shell.getHistoryManager().getHistory()){
-            output.print(i.getName());
+            output.print("\t" + i.getName());
         }
         output.print("]");
     }

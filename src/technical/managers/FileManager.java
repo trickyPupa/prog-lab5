@@ -12,7 +12,6 @@ import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 import necessary.Movie;
 import technical.exceptions.FileException;
-import technical.exceptions.PartlyCorrectDataFileException;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -24,6 +23,9 @@ import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.Vector;
 
+/**
+ * Класс, управляющий файлом, который хранит данные о коллекции в формате .json
+ */
 public class FileManager {
 
     public static class CustomLocalDateSerializer extends StdSerializer<LocalDate> {
@@ -108,6 +110,10 @@ public class FileManager {
         return mapper.readValue(file, Movie.class);
     }
 
+    /**
+     * Читает коллекцию из файла.
+     * @return коллекция элементов, записанная в файле данных программы.
+     */
     public Vector<Movie> collectionFromFile() {
         try {
             TypeReference<Vector<Movie>> type = new TypeReference<>() {
@@ -134,6 +140,11 @@ public class FileManager {
         }
     }
 
+    /**
+     * Записывает данные в файл данных
+     * @param o объект, который требуется записать
+     * @throws JsonProcessingException при ошибке распознавания данных из .json файла
+     */
     public void writeToFile(Object o) throws JsonProcessingException {
         try(FileWriter fw = new FileWriter(file)) {
             fw.write(mapper.writeValueAsString(o));

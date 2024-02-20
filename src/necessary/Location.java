@@ -33,7 +33,7 @@ public class Location implements Checkable {
             while(true) {
                 output.print("Введиите координату X локации режиссёра (число с плавающей точкой): ");
                 String line = input.nextLine();
-                if (line.equals("exit")){
+                if (line == null || line.equals("exit")){
                     throw new InterruptException();
                 }
                 if (isFloat(line)){
@@ -46,7 +46,7 @@ public class Location implements Checkable {
             while(true) {
                 output.print("Введиите координату Y локации режиссёра (целое число): ");
                 String line = input.nextLine();
-                if (line.equals("exit")){
+                if (line == null || line.equals("exit")){
                     throw new InterruptException();
                 }
                 if (isLong(line)){
@@ -59,7 +59,7 @@ public class Location implements Checkable {
             while(true) {
                 output.print("Введиите координату Z локации режиссёра (целое число): ");
                 String line = input.nextLine();
-                if (line.equals("exit")){
+                if (line == null || line.equals("exit")){
                     throw new InterruptException();
                 }
                 if (isInt(line)){

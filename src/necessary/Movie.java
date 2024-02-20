@@ -6,11 +6,11 @@ import necessary.enums.*;
 import technical.exceptions.InterruptException;
 import technical.exceptions.WrongArgumentException;
 import technical.managers.FileManager;
-import technical.managers.OutputManager;
 import technical.managers.abstractions.IInputManager;
 import technical.managers.abstractions.IOutputManager;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.function.Predicate;
@@ -44,6 +44,10 @@ public class Movie implements Comparable<Movie>, Checkable {
         creationDate = java.time.LocalDate.now();
     }
 
+    /**
+     * Обновляет значения фильма, не меняя его Id
+     * @param newValue объект, значения которого требуется присвоить.
+     */
     public void update(Movie newValue){
         name = newValue.name;
         oscarsCount = newValue.oscarsCount;
@@ -60,6 +64,30 @@ public class Movie implements Comparable<Movie>, Checkable {
 
     public Integer getGoldenPalmCount(){
         return goldenPalmCount;
+    }
+
+    public LocalDate getCreationDate() {
+        return creationDate;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public int getOscarsCount() {
+        return oscarsCount;
+    }
+
+    public long getLength() {
+        return length;
+    }
+
+    public MpaaRating getMpaaRating() {
+        return mpaaRating;
+    }
+
+    public Person getDirector() {
+        return director;
     }
 
     public Coordinates getCoordinates() {
@@ -114,7 +142,7 @@ public class Movie implements Comparable<Movie>, Checkable {
 
     /**
      * Метод проверяет корректность аргументов, переданных для создания объекта.
-     * @param args - переданные аргументы
+     * @param args переданные аргументы
      * @return true, если аргументы корректны, иначе - false
      */
     public static boolean validateArgs(String[] args){
@@ -132,6 +160,7 @@ public class Movie implements Comparable<Movie>, Checkable {
         return true;
     }
 
+    @Deprecated
     public static Movie createMovie(String[] args, IInputManager input, IOutputManager output){
         Movie elem = new Movie();
 
@@ -181,9 +210,9 @@ public class Movie implements Comparable<Movie>, Checkable {
 
     /**
      * Создает и возвращает объект {@see Movie} используя переданный поток ввода
-     * @param input - экземпляр класса, реализующего {@see IInputManager} для считывания аргументов
-     * @param output - экземпляр класса, реализующего {@see IOutputManager} для общения с пользователем
-     * @return {@see Movie}
+     * @param input экземпляр класса, реализующего {@see IInputManager} для считывания аргументов
+     * @param output экземпляр класса, реализующего {@see IOutputManager} для общения с пользователем
+     * @return {@see Movie} - объект, созданный с помощью данного входного потока
      */
     public static Movie createMovie1(IInputManager input, IOutputManager output){
         Movie elem = new Movie();
@@ -236,12 +265,15 @@ public class Movie implements Comparable<Movie>, Checkable {
                 Predicate<String> check = args_checkers.get(a);
                 output.print("Введите " + a + ":");
                 String line = input.nextLine();
-                if (line.equals("exit")){
+                if (line == null || line.equals("exit")){
                     throw new InterruptException();
                 }
 
                 while (!check.test(line)){
                     output.print("Некорректные данные.");
+
+                    output.print("'" + line + "'");
+
                     output.print("Введите " + a + ":");
                     line = input.nextLine();
                 }
@@ -272,6 +304,7 @@ public class Movie implements Comparable<Movie>, Checkable {
 
     @Override
     public int compareTo(Movie o) {
-        return this.creationDate != o.creationDate ? this.creationDate.compareTo(o.creationDate) : this.name.compareTo(o.name);
+//        return this.creationDate != o.creationDate ? this.creationDate.compareTo(o.creationDate) : this.name.compareTo(o.name);
+        return this.name.compareTo(o.name);
     }
 }

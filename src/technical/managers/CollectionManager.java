@@ -9,6 +9,9 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Vector;
 
+/**
+ * Класс управляет основной коллекцией; данная реализация работает с {@link Vector}.
+ */
 public class CollectionManager {
     private Vector<Movie> collection;
     private final LocalDateTime creationDate;
@@ -50,6 +53,9 @@ public class CollectionManager {
         return res;
     }
 
+    /**
+     * @return сводка информации о коллекции: длина, тип коллекции, дата инициализации, хэш-код.
+     */
     public Map<String, String> getInfo(){
         Map<String, String> ans = new LinkedHashMap<>();
         ans.put("длина", String.valueOf(collection.size()));
@@ -60,6 +66,9 @@ public class CollectionManager {
         return ans;
     }
 
+    /**
+     * Очищает коллекцию
+     */
     public void clear(){
         collection.clear();
     }
