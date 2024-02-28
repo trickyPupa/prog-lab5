@@ -10,13 +10,13 @@ public abstract class AbstractCommand implements Command{
     private String arguments;
     private String description;
 
-    protected AbstractCommandHandler.ShellValuables shell;
+//    protected AbstractCommandHandler.ShellValuables shell;
 
-    public AbstractCommand(String name, String description, String arguments, AbstractCommandHandler.ShellValuables shell){
+    public AbstractCommand(String name, String description, String arguments){
         this.name = name;
         this.arguments = arguments;
         this.description = description;
-        this.shell = shell;
+//        this.shell = shell;
     }
 
     @Override

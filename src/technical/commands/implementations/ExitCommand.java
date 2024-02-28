@@ -2,15 +2,16 @@ package technical.commands.implementations;
 
 import technical.commands.abstractions.AbstractCommand;
 import technical.managers.abstractions.AbstractCommandHandler;
+import technical.managers.abstractions.AbstractReceiver;
 
 public class ExitCommand extends AbstractCommand {
 
-    public ExitCommand(AbstractCommandHandler.ShellValuables shell) {
-        super("exit", "Команда для завершения работы.", "no", shell);
+    public ExitCommand() {
+        super("exit", "Команда для завершения работы.", "no");
     }
 
     @Override
-    public void execute(String[] s) {
-        System.exit(0);
+    public void execute(String[] s, AbstractReceiver rec) {
+        rec.exit(s);
     }
 }

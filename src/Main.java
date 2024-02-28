@@ -1,3 +1,4 @@
+import necessary.enums.Country;
 import technical.exceptions.*;
 import technical.managers.*;
 import technical.managers.abstractions.Handler;
@@ -13,8 +14,9 @@ public class Main {
 
 //        test1();
 
-        command_executing(args);
+        commandExecuting(args);
     }
+
 
     public static void test(){
         String filename = "C:\\Users\\timof\\IdeaProjects\\prog-lab5\\data\\data1.json";
@@ -46,7 +48,7 @@ public class Main {
         System.out.println("12345678901234".substring(14));
     }
 
-    public static void command_executing(String[] args){
+    public static void commandExecuting(String[] args){
         String filename = args[0];
 
 //        InputStream input = new BufferedInputStream(System.in);
@@ -55,7 +57,7 @@ public class Main {
             IInputManager inputManager = new InputManager(input);
             IOutputManager outputManager = new OutputManager();
             FileManager fileManager = new FileManager(filename);
-            //CollectionManager collectionManager = new CollectionManager();
+            // CollectionManager collectionManager = new CollectionManager();
             CollectionManager collectionManager = new CollectionManager(fileManager.collectionFromFile());
 
             Handler handler = new CommandHandler(inputManager, outputManager, collectionManager, fileManager);

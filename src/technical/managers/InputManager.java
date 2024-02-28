@@ -29,7 +29,7 @@ public class InputManager implements IInputManager {
     @Override
     public String nextLine() throws IOException {
         String line = "";
-        int c;
+//        int c;
 
 //        while ((char)(c = currentInput.read()) != '\n' && (char)c != '\r'){
 //            if (c == -1) {
@@ -44,8 +44,9 @@ public class InputManager implements IInputManager {
             if ((line = temporaryInput.readLine()) != null) return line;
             else temporaryInput = null;
         }
-
-        return normalInput.readLine().strip();
+        line = normalInput.readLine();
+        if (line == null) return "exit";
+        return line.strip();
     }
 
     /*public String nextWord() throws IOException {

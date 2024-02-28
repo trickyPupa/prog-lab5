@@ -2,6 +2,7 @@ package technical.managers.abstractions;
 
 import technical.commands.abstractions.AbstractCommand;
 import technical.managers.CollectionManager;
+import technical.managers.CommandReceiver;
 import technical.managers.FileManager;
 import technical.managers.HistoryManager;
 
@@ -54,6 +55,8 @@ public abstract class AbstractCommandHandler implements Handler {
     }
 
     protected ShellValuables vals;
+
+    protected AbstractReceiver receiver;
 
     public AbstractCommandHandler(IInputManager inp, IOutputManager out, CollectionManager col, FileManager fm){
         vals = new ShellValuables(inp, out, col, fm, new HistoryManager());
