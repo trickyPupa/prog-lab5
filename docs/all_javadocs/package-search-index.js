@@ -1,0 +1,1 @@
+packageSearchIndex = [{"l":"All Packages","u":"allpackages-index.html"},{"l":"necessary"},{"l":"necessary.enums"},{"l":"technical"},{"l":"technical.commands.abstractions"},{"l":"technical.commands.implementations"},{"l":"technical.exceptions"},{"l":"technical.managers"},{"l":"technical.managers.abstractions"}];updateSearchResults();

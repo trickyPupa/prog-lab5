@@ -45,7 +45,7 @@ public class Main {
     }
 
     public static void test1(){
-        System.out.println("12345678901234".substring(14));
+        System.out.println(Integer.parseInt("   "));
     }
 
     public static void commandExecuting(String[] args){
@@ -76,6 +76,7 @@ public class Main {
                     outputManager.print("Рекурсия в исполняемом файле.");
                 } catch (RuntimeException e){
                     outputManager.print(e.getMessage());
+                    System.out.println("main catch runtime");
                 }
             }
         }
@@ -86,6 +87,8 @@ public class Main {
         catch(IOException e){
             System.out.println("Ошибка при чтении данных");
             System.out.println(e.getMessage());
+            System.out.println("main catch io");
+            throw new RuntimeException(e);
         }
         catch(Exception e){
             System.out.println("Что-то пошло не так в ходе выполнения программы.");

@@ -12,9 +12,13 @@ import technical.managers.abstractions.AbstractReceiver;
 import technical.managers.abstractions.IOutputManager;
 
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.ArrayDeque;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Vector;
+import java.util.regex.Pattern;
 
 import static technical.Utils.isInt;
 
@@ -27,11 +31,12 @@ public class CommandReceiver extends AbstractReceiver {
     public void add(String[] args){
         Movie element = Movie.createMovie1(shell.getInputManager(), shell.getOutputManager());
 
-        try {
+        /*try {
             shell.getCollectionManager().add(element);
         } catch (WrongArgumentException e){
             throw new WrongArgumentException("");
-        }
+        }*/
+        shell.getCollectionManager().add(element);
     }
 
     @Override
@@ -74,8 +79,8 @@ public class CommandReceiver extends AbstractReceiver {
     @Override
     public void executeScript(String[] args) {
         if (args[0].isBlank()) {
-            shell.getOutputManager().print("Некорректные аргументы.");
-            return;
+//            shell.getOutputManager().print("Некорректные аргументы.");
+            throw new WrongArgumentException("execute");
         }
 
         if (!args[0].endsWith(".txt")) {
@@ -89,46 +94,77 @@ public class CommandReceiver extends AbstractReceiver {
             throw new FileException("Файл недоступен для чтения.");
         }
 
-        String writer = "";
+        StringBuilder writer = new StringBuilder();
 
-        try (BufferedReader bufReader = new BufferedReader(new FileReader(file))) {
+        try {
+            BufferedReader bufReader = new BufferedReader(new FileReader(file));
+
+//            if (checkRecursion(Path.of(args[0]), new ArrayDeque<>())) {
+//                shell.getOutputManager().print("При анализе скрипта обнаружена бесконечная рекурсия. Устраните ее перед исполнением.");
+//                return;
+//            }
+
             String temp;
             while ((temp = bufReader.readLine()) != null){
-                if (temp.strip().startsWith("execute_script") && temp.strip().substring(14).strip().startsWith(args[0])){
+                if (temp.strip().startsWith("execute_script")){ // && temp.strip().substring(14).strip().startsWith(args[0])
 //                    throw new RecursionException();
-                    shell.getOutputManager().print("В файле рекурсия. Будут выполнены все остальные команды.");
-                } else writer = writer + temp;
+                    shell.getOutputManager().print("Рекурсия внутри файла не будет выполнена.");
+                    break;
+                } else writer.append("\n").append(temp);
             }
 
-//            IInputManager oldInputManager = shell.getInputManager();
-//            shell.setTemporaryInputManager(new InputManager(new FileReader(file)));
-            CharArrayReader car = new CharArrayReader(writer.toCharArray());
+            CharArrayReader car = new CharArrayReader(writer.toString().toCharArray());
 
+            shell.getOutputManager().print("Начало исполнения файла {" + file.getPath() + "}.");
             shell.getInputManager().setTemporaryInput(new BufferedReader(car));
+
         } catch (FileNotFoundException e) {
             throw new FileException("Нет файла с указанным именем");
         } catch (IOException e){
-            System.out.println("Ошибка при чтении данных");
-            System.out.println(e.getMessage());
+            shell.getOutputManager().print("Ошибка при чтении данных.");
+            shell.getOutputManager().print(e.getMessage());
         }
-
-//        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
-//            String line;
-//            while ((line = reader.readLine()) != null){
-//                shell.getCommandHander().nextCommand(line);
-//            }
-//            shell.getCommandHander().nextCommand("exit");
-//        } catch (IOException e) {
-//            throw new RuntimeException(e);
-//        }
     }
+
+    private boolean checkRecursion(Path path, ArrayDeque<Path> stack) throws IOException {
+        if (stack.contains(path)) return true;
+        stack.addLast(path);
+        String str = Files.readString(path);
+
+        Pattern pattern = Pattern.compile("execute_script .*");
+        var patternMatcher = pattern.matcher(str);
+        while (patternMatcher.find())
+        {
+            Path newPath = Path.of(patternMatcher.group().split(" ")[1]);
+            if(checkRecursion(newPath, stack)) return true;
+        }
+        stack.removeLast();
+        return false;
+    }
+
+    /*private boolean checkRecursionLimit(Path path, ArrayDeque<Path> stack, int recursion_lvl) throws IOException {
+        if (stack.contains(path)) return true;
+        stack.addLast(path);
+        String str = Files.readString(path);
+
+        Pattern pattern = Pattern.compile("execute_script .*");
+        var patternMatcher = pattern.matcher(str);
+        while (patternMatcher.find())
+        {
+            Path newPath = Path.of(patternMatcher.group().split(" ")[1]);
+            if(checkRecursion(newPath, stack)) return true;
+        }
+        stack.removeLast();
+        return false;
+    }*/
 
     @Override
     public void filterByGoldenPalmCount(String[] args) {
-        if (!isInt(args[0]) && !args[0].isBlank()){
-            shell.getOutputManager().print("Некорректные аргументы.");
+        if (!isInt(args[0])){
+//            shell.getOutputManager().print("Некорректные аргументы.");
+            throw new WrongArgumentException("filter_by_golden_palm_count");
         }
-        Integer gp_count = args[0].isBlank() ? null : Integer.parseInt(args[0]);
+        Integer gp_count = Integer.parseInt(args[0]);
 
         Vector<Movie> collection = shell.getCollectionManager().getCollection();
 
@@ -199,10 +235,11 @@ public class CommandReceiver extends AbstractReceiver {
 
     @Override
     public void removeAllByGoldenPalmCount(String[] args) {
-        if (!isInt(args[0]) && !args[0].isBlank()){
-            shell.getOutputManager().print("Некорректные аргументы.");
+        if (!isInt(args[0])){
+//            shell.getOutputManager().print("Некорректные аргументы.");
+            throw new WrongArgumentException("remove_all_by_golden_palm_count");
         }
-        Integer gp_count = args[0].isBlank() ? null : Integer.parseInt(args[0]);
+        Integer gp_count = Integer.parseInt(args[0]);
 
         Vector<Movie> collection = shell.getCollectionManager().getCollection();
         for (Movie i : collection){
@@ -210,12 +247,15 @@ public class CommandReceiver extends AbstractReceiver {
                 shell.getCollectionManager().remove(i);
             }
         }
+
+        shell.getOutputManager().print("Элементы с количеством золотых пальмовых ветвей = " + gp_count + " удалены.");
     }
 
     @Override
     public void removeById(String[] args) {
         if (!isInt(args[0])){
-            shell.getOutputManager().print("Некорректные аргументы.");
+//            shell.getOutputManager().print("Некорректные аргументы.");
+            throw new WrongArgumentException("remove_by_id");
         }
         int id = Integer.parseInt(args[0]);
 
@@ -253,6 +293,7 @@ public class CommandReceiver extends AbstractReceiver {
         for(Movie i : collection){
             if (i.compareTo(elem) < 0){
                 cm.remove(i);
+                shell.getOutputManager().print("Удален элемент {" + i + "}.");
             }
         }
     }
@@ -260,8 +301,8 @@ public class CommandReceiver extends AbstractReceiver {
     @Override
     public void update(String[] args) {
         if (!isInt(args[0])){
-            shell.getOutputManager().print("Некорректные аргументы.");
-            return;
+//            shell.getOutputManager().print("Некорректные аргументы.");
+            throw new WrongArgumentException("update");
         }
         int id = Integer.parseInt(args[0]);
 

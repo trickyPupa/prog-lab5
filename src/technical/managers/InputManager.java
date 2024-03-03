@@ -4,6 +4,7 @@ import technical.managers.abstractions.IInputManager;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayDeque;
 
 /**
  * Конкретный класс реализует {@link IInputManager}, осуществляет доставку входных данных программе из различных источников.
@@ -11,11 +12,12 @@ import java.nio.charset.StandardCharsets;
 public class InputManager implements IInputManager {
     protected InputStream input;
     protected BufferedReader normalInput;
-    protected BufferedReader temporaryInput;
+    protected ArrayDeque<BufferedReader> temporaryInput;
 
     public InputManager(InputStream input){
         this.input = input;
         normalInput = new BufferedReader(new InputStreamReader(input, StandardCharsets.UTF_8));
+        temporaryInput = new ArrayDeque<>();
     }
 
     public InputManager(Reader input){
@@ -40,9 +42,17 @@ public class InputManager implements IInputManager {
 //        }
 //        return line.strip();
 
-        if (temporaryInput != null){
-            if ((line = temporaryInput.readLine()) != null) return line;
-            else temporaryInput = null;
+        while (!temporaryInput.isEmpty()){
+            if ((line = temporaryInput.getLast().readLine()) != null) {
+                if (line.isBlank()) continue;
+                return line;
+            }
+            else {
+                temporaryInput.getLast().close();
+                temporaryInput.removeLast();
+
+                System.out.println("Конец исполнения файла.");
+            }
         }
         line = normalInput.readLine();
         if (line == null) return "exit";
@@ -70,11 +80,11 @@ public class InputManager implements IInputManager {
      */
     @Override
     public void setTemporaryInput(Reader input){
-        temporaryInput = new BufferedReader(input);
+        temporaryInput.add(new BufferedReader(input));
     }
 
     @Override
     public void setTemporaryInput(InputStream input) {
-        temporaryInput = new BufferedReader(new InputStreamReader(input, StandardCharsets.UTF_8));
+        temporaryInput.add(new BufferedReader(new InputStreamReader(input, StandardCharsets.UTF_8)));
     }
 }
