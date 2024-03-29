@@ -3,11 +3,15 @@ package technical.commands.implementations;
 import necessary.Movie;
 import technical.commands.abstractions.AbstractCommand;
 import technical.exceptions.WrongArgumentException;
+import technical.managers.CommandReceiver;
 import technical.managers.abstractions.AbstractCommandHandler;
+import technical.managers.abstractions.AbstractReceiver;
+
+import javax.sound.midi.Receiver;
 
 public class AddCommand extends AbstractCommand{
 
-    public AddCommand(AbstractCommandHandler.ShellValuables shell) {
+    public AddCommand() {
         super("add", "Команда для добавления Movie в коллекцию.\n    Требуется ввести все" +
                 "характеристики фильма:\n - Название (строка), количество \"Оскаров\" (целое число), количество " +
                 "золотых пальмовых ветвей (целое число или пустая строка), продолжительность фильма " +
@@ -17,18 +21,19 @@ public class AddCommand extends AbstractCommand{
                 "BROWN.), на отдельной строке цвет волос (одна " +
                 "из строк: GREEN, RED, BLUE, YELLOW, ORANGE), национальность (одна из " +
                 "доступных стран: FRANCE, INDIA, VATICAN, THAILAND), местонахождение (3 " +
-                "числа-координаты: дробное, целое, целое)", "{element}",  shell);
+                "числа-координаты: дробное, целое, целое)", "{element}");
     }
 
     @Override
-    public void execute(String[] s) {
-//        Movie element = Movie.createMovie(s, shell.getInputManager(), shell.getOutputManager());
-        Movie element = Movie.createMovie1(shell.getInputManager(), shell.getOutputManager());
+    public void execute(String[] s, AbstractReceiver r) {
+//        Movie element = Movie.createMovie1(shell.getInputManager(), shell.getOutputManager());
+//
+//        try {
+//            shell.getCollectionManager().add(element);
+//        } catch (WrongArgumentException e){
+//            throw new WrongArgumentException(getName());
+//        }
 
-        try {
-            shell.getCollectionManager().add(element);
-        } catch (WrongArgumentException e){
-            throw new WrongArgumentException(getName());
-        }
+        r.add(s);
     }
 }

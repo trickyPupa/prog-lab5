@@ -2,14 +2,15 @@ package technical.commands.implementations;
 
 import technical.commands.abstractions.AbstractCommand;
 import technical.managers.abstractions.AbstractCommandHandler;
+import technical.managers.abstractions.AbstractReceiver;
 
 public class ShowCommand extends AbstractCommand {
-    public ShowCommand(AbstractCommandHandler.ShellValuables shell) {
-        super("show", "Команда для просмотра коллекции.", "no", shell);
+    public ShowCommand() {
+        super("show", "Команда для просмотра коллекции.", "no");
     }
 
     @Override
-    public void execute(String[] s) {
-        shell.getOutputManager().print(shell.getCollectionManager().presentView());
+    public void execute(String[] s, AbstractReceiver rec) {
+        rec.show(s);
     }
 }

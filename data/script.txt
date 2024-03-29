@@ -15,4 +15,4 @@ INDIA
 1.123
 23
 543
-info
+show

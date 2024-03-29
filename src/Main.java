@@ -1,3 +1,5 @@
+import necessary.Movie;
+import necessary.enums.Country;
 import technical.exceptions.*;
 import technical.managers.*;
 import technical.managers.abstractions.Handler;
@@ -13,8 +15,9 @@ public class Main {
 
 //        test1();
 
-        command_executing(args);
+        commandExecuting(args);
     }
+
 
     public static void test(){
         String filename = "C:\\Users\\timof\\IdeaProjects\\prog-lab5\\data\\data1.json";
@@ -43,10 +46,10 @@ public class Main {
     }
 
     public static void test1(){
-        System.out.println("12345678901234".substring(14));
+        System.out.println(Integer.parseInt("   "));
     }
 
-    public static void command_executing(String[] args){
+    public static void commandExecuting(String[] args){
         String filename = args[0];
 
 //        InputStream input = new BufferedInputStream(System.in);
@@ -55,8 +58,14 @@ public class Main {
             IInputManager inputManager = new InputManager(input);
             IOutputManager outputManager = new OutputManager();
             FileManager fileManager = new FileManager(filename);
-            //CollectionManager collectionManager = new CollectionManager();
+            // CollectionManager collectionManager = new CollectionManager();
             CollectionManager collectionManager = new CollectionManager(fileManager.collectionFromFile());
+            int start_id = 0;
+            for(Movie m : collectionManager.getCollection()){
+                if (m.getId() > start_id) start_id = m.getId();
+            }
+
+            Movie.setId_counter(start_id);
 
             Handler handler = new CommandHandler(inputManager, outputManager, collectionManager, fileManager);
 
@@ -74,6 +83,7 @@ public class Main {
                     outputManager.print("Рекурсия в исполняемом файле.");
                 } catch (RuntimeException e){
                     outputManager.print(e.getMessage());
+                    System.out.println("main catch runtime");
                 }
             }
         }
@@ -84,6 +94,8 @@ public class Main {
         catch(IOException e){
             System.out.println("Ошибка при чтении данных");
             System.out.println(e.getMessage());
+            System.out.println("main catch io");
+            throw new RuntimeException(e);
         }
         catch(Exception e){
             System.out.println("Что-то пошло не так в ходе выполнения программы.");

@@ -1,0 +1,2 @@
+info
+execute_script C:\Users\bomb\IdeaProjects\lab5\data\recursion_script.txt

@@ -2,6 +2,7 @@ package technical.managers.abstractions;
 
 import technical.commands.abstractions.AbstractCommand;
 import technical.managers.CollectionManager;
+import technical.managers.CommandReceiver;
 import technical.managers.FileManager;
 import technical.managers.HistoryManager;
 
@@ -16,6 +17,9 @@ public abstract class AbstractCommandHandler implements Handler {
         private final HistoryManager historyManager;
         private CollectionManager collectionManager;
         private FileManager fileManager;
+
+        public int recur_param = 0;
+        public int cur_recur_param = 0;
 
         public final Map<String, AbstractCommand> commands = new HashMap<>();
 
@@ -54,6 +58,8 @@ public abstract class AbstractCommandHandler implements Handler {
     }
 
     protected ShellValuables vals;
+
+    protected AbstractReceiver receiver;
 
     public AbstractCommandHandler(IInputManager inp, IOutputManager out, CollectionManager col, FileManager fm){
         vals = new ShellValuables(inp, out, col, fm, new HistoryManager());
