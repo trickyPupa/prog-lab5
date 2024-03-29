@@ -140,6 +140,10 @@ public class Movie implements Comparable<Movie>, Checkable {
         this.coordinates = coordinates;
     }
 
+    public static void setId_counter(int id){
+        id_counter = id;
+    }
+
     /**
      * Метод проверяет корректность аргументов, переданных для создания объекта.
      * @param args переданные аргументы
@@ -225,24 +229,24 @@ public class Movie implements Comparable<Movie>, Checkable {
             }
             return false;
         });
-        args_checkers.put("количество премий Оскар", x -> {
+        args_checkers.put("количество премий Оскар (целое число <2*10^9 и >-2*10^9)", x -> {
             if (isInt(x) && !x.equals("0")){
                 elem.setOscarsCount(Integer.parseInt(x));
                 return true;
             }
             return false;
         });
-        args_checkers.put("количество золотых пальмовых ветвей (необязательно)", x -> {
+        args_checkers.put("количество золотых пальмовых ветвей (целое число <2*10^9 и >-2*10^9 или пустая строка)", x -> {
             if (isInt(x) && !x.equals("0")){
                 elem.setGoldenPalmCount(Integer.parseInt(x));
                 return true;
-            } else if (x.isEmpty()){
+            } else if (x.isBlank()){
                 elem.setGoldenPalmCount(null);
                 return true;
             }
             return false;
         });
-        args_checkers.put("продолжительность фильма", x -> {
+        args_checkers.put("продолжительность фильма (целое число <9*10^18 и >-9*10^18)", x -> {
             if (isLong(x) && !x.equals("0")){
                 elem.setLength(Long.parseLong(x));
                 return true;
@@ -250,8 +254,8 @@ public class Movie implements Comparable<Movie>, Checkable {
             return false;
         });
         args_checkers.put("MPAA рейтинг фильма (PG, PG_13, NC_17)", x -> {
-            if (MpaaRating.contains(x)){
-                elem.setMpaaRating(MpaaRating.valueOf(x));
+            if (MpaaRating.contains(x.toUpperCase())){
+                elem.setMpaaRating(MpaaRating.valueOf(x.toUpperCase()));
                 return true;
             }
             return false;
@@ -265,7 +269,7 @@ public class Movie implements Comparable<Movie>, Checkable {
                 Predicate<String> check = args_checkers.get(a);
                 output.print("Введите " + a + ":");
                 String line = input.nextLine();
-                if (line == null || line.equals("exit")){
+                if (line == null || line.strip().equals("exit")){
                     throw new InterruptException();
                 }
 

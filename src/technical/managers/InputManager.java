@@ -59,21 +59,6 @@ public class InputManager implements IInputManager {
         return line.strip();
     }
 
-    /*public String nextWord() throws IOException {
-        String word = "";
-        int c;
-        while (true){
-            if (temporaryInput == null || (c = temporaryInput.read()) == -1) {
-//                (char) (c = (normalInput.read())) != ' '
-                c = normalInput.read();
-            }
-
-            if (c == -1 || (char) c == '\n' || (char) c == ' ') return word.strip();
-            word = word + (char)c;
-        }
-//        return word;
-    }*/
-
     /**
      * Устанавливает поток, из которого требуется читать данные в обход основного. Когда поток исчерпается, произойдет возвращение к основному.
      * @param input новый поток

@@ -21,7 +21,13 @@ public class ExecuteScriptCommand extends AbstractCommand {
 
     @Override
     public void execute(String[] s, AbstractReceiver rec) {
-        rec.executeScript(s);
+//        int check_recur_param = 0;
+//        try {
+//            check_recur_param = checkRecursion(Path.of(s[0]), new ArrayDeque<>(), 0);
+//        } catch (IOException e){
+////            System.out.println(e.getMessage());
+//        }
 
+        rec.executeScript(s);
     }
 }

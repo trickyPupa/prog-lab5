@@ -64,6 +64,7 @@ public class CommandHandler extends AbstractCommandHandler implements Handler {
     public void nextCommand() throws IOException {
         IInputManager input = vals.getInputManager();
 
+        vals.getOutputManager().print("Введите команду: ");
         String line = input.nextLine().strip();
 
         nextCommand(line);

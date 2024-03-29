@@ -1,3 +1,5 @@
 info
-execute_script C:\Users\timof\IdeaProjects\prog-lab5\data\recur1.txt
+execute_script C:\Users\bomb\IdeaProjects\lab5\data\script.txt
+
+execute_script C:\Users\bomb\IdeaProjects\lab5\data\recur1.txt
 info

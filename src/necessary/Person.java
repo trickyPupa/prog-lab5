@@ -155,7 +155,7 @@ public class Person implements Comparable<Person>, Checkable {
             }
             return false;
         });
-        args_checkers.put("дату рождения режиссёра", x -> {
+        args_checkers.put("дату рождения режиссёра в формате ДД.ММ.ГГГГ", x -> {
             if (x.matches("(0[1-9]|[12][0-9]|3[01])\\.(0[1-9]|1[012])\\.(1[89]\\d\\d|20([01]\\d|2[01234]))")){
 
                 String[] temp = x.split("\\.");
@@ -170,22 +170,22 @@ public class Person implements Comparable<Person>, Checkable {
             return false;
         });
         args_checkers.put("цвет глаз режиссёра (BLUE, YELLOW, ORANGE, WHITE, BROWN)", x -> {
-            if (EyeColor.contains(x)){
-                elem.setEyeColor(EyeColor.valueOf(x));
+            if (EyeColor.contains(x.toUpperCase())){
+                elem.setEyeColor(EyeColor.valueOf(x.toUpperCase()));
                 return true;
             }
             return false;
         });
         args_checkers.put("цвет волос режиссёра (GREEN, RED, BLUE, YELLOW, ORANGE)", x -> {
-            if (HairColor.contains(x)){
-                elem.setHairColor(HairColor.valueOf(x));
+            if (HairColor.contains(x.toUpperCase())){
+                elem.setHairColor(HairColor.valueOf(x.toUpperCase()));
                 return true;
             }
             return false;
         });
         args_checkers.put("национальность режиссёра (FRANCE, INDIA, VATICAN, THAILAND)", x -> {
-            if (Country.contains(x)){
-                elem.setNationality(Country.valueOf(x));
+            if (Country.contains(x.toUpperCase())){
+                elem.setNationality(Country.valueOf(x.toUpperCase()));
                 return true;
             }
             return false;
@@ -196,7 +196,7 @@ public class Person implements Comparable<Person>, Checkable {
                 Predicate<String> check = args_checkers.get(a);
                 output.print("Введите " + a + ":");
                 String line = input.nextLine();
-                if (line == null || line.equals("exit")){
+                if (line == null || line.strip().equals("exit")){
                     throw new InterruptException();
                 }
 

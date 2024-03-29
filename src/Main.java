@@ -1,3 +1,4 @@
+import necessary.Movie;
 import necessary.enums.Country;
 import technical.exceptions.*;
 import technical.managers.*;
@@ -59,6 +60,12 @@ public class Main {
             FileManager fileManager = new FileManager(filename);
             // CollectionManager collectionManager = new CollectionManager();
             CollectionManager collectionManager = new CollectionManager(fileManager.collectionFromFile());
+            int start_id = 0;
+            for(Movie m : collectionManager.getCollection()){
+                if (m.getId() > start_id) start_id = m.getId();
+            }
+
+            Movie.setId_counter(start_id);
 
             Handler handler = new CommandHandler(inputManager, outputManager, collectionManager, fileManager);
 

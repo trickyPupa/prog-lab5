@@ -18,6 +18,9 @@ public abstract class AbstractCommandHandler implements Handler {
         private CollectionManager collectionManager;
         private FileManager fileManager;
 
+        public int recur_param = 0;
+        public int cur_recur_param = 0;
+
         public final Map<String, AbstractCommand> commands = new HashMap<>();
 
         public ShellValuables(IInputManager inp, IOutputManager out, CollectionManager col,

@@ -5,7 +5,6 @@ import necessary.Movie;
 import technical.commands.abstractions.AbstractCommand;
 import technical.commands.abstractions.Command;
 import technical.exceptions.FileException;
-import technical.exceptions.RecursionException;
 import technical.exceptions.WrongArgumentException;
 import technical.managers.abstractions.AbstractCommandHandler;
 import technical.managers.abstractions.AbstractReceiver;
@@ -37,6 +36,7 @@ public class CommandReceiver extends AbstractReceiver {
             throw new WrongArgumentException("");
         }*/
         shell.getCollectionManager().add(element);
+        shell.getOutputManager().print("Новый элемент успешно добавлен");
     }
 
     @Override
@@ -44,6 +44,8 @@ public class CommandReceiver extends AbstractReceiver {
         try {
             FileManager fm = shell.getFileManager();
             fm.writeToFile(shell.getCollectionManager().getCollection());
+
+            shell.getOutputManager().print("Коллекция сохранена в файл.");
         } catch (JsonProcessingException e) {
             shell.getOutputManager().print("Не записать в файл:\n" + e.getMessage());
         }
@@ -97,20 +99,36 @@ public class CommandReceiver extends AbstractReceiver {
         StringBuilder writer = new StringBuilder();
 
         try {
+            int recur_param = checkRecursion(Path.of(args[0]), new ArrayDeque<>(), 0);
+            if (shell.recur_param == 0) shell.recur_param = recur_param;
+
+//            System.out.println(shell.recur_param);
+//            System.out.println(shell.cur_recur_param);
+//            System.out.println(recur_param);
+
             BufferedReader bufReader = new BufferedReader(new FileReader(file));
 
-//            if (checkRecursion(Path.of(args[0]), new ArrayDeque<>())) {
-//                shell.getOutputManager().print("При анализе скрипта обнаружена бесконечная рекурсия. Устраните ее перед исполнением.");
-//                return;
+//            int check_recur_param = checkRecursion(Path.of(args[0]), new ArrayDeque<>(), 0);
+//            System.out.println(check_recur_param);
+
+//            if (recur_param != 0) {
+//                shell.getOutputManager().print("При анализе скрипта обнаружена бесконечная рекурсия. Рекурсия внутри файла не будет выполнена.");
 //            }
 
             String temp;
             while ((temp = bufReader.readLine()) != null){
                 if (temp.strip().startsWith("execute_script")){ // && temp.strip().substring(14).strip().startsWith(args[0])
-//                    throw new RecursionException();
-                    shell.getOutputManager().print("Рекурсия внутри файла не будет выполнена.");
-                    break;
-                } else writer.append("\n").append(temp);
+                    shell.cur_recur_param++;
+                    if (shell.cur_recur_param == shell.recur_param) {
+                        shell.getOutputManager().print("В файле обнаружена бесконечная рекурсия, " +
+                                "будут выполнены все команды до нее.");
+                        shell.recur_param = 0;
+                        shell.cur_recur_param = 0;
+                        break;
+                    }
+
+                }
+                writer.append("\n").append(temp);
             }
 
             CharArrayReader car = new CharArrayReader(writer.toString().toCharArray());
@@ -126,8 +144,10 @@ public class CommandReceiver extends AbstractReceiver {
         }
     }
 
-    private boolean checkRecursion(Path path, ArrayDeque<Path> stack) throws IOException {
-        if (stack.contains(path)) return true;
+    private int checkRecursion(Path path, ArrayDeque<Path> stack, int j) throws IOException {
+        int i = 0;
+
+        if (stack.contains(path)) return j;
         stack.addLast(path);
         String str = Files.readString(path);
 
@@ -135,28 +155,15 @@ public class CommandReceiver extends AbstractReceiver {
         var patternMatcher = pattern.matcher(str);
         while (patternMatcher.find())
         {
+            i++;
             Path newPath = Path.of(patternMatcher.group().split(" ")[1]);
-            if(checkRecursion(newPath, stack)) return true;
+//            if(checkRecursion(newPath, stack, i) != 0) return i;
+            int a = checkRecursion(newPath, stack, i);
+            if (a != 0) return a + j;
         }
         stack.removeLast();
-        return false;
+        return 0;
     }
-
-    /*private boolean checkRecursionLimit(Path path, ArrayDeque<Path> stack, int recursion_lvl) throws IOException {
-        if (stack.contains(path)) return true;
-        stack.addLast(path);
-        String str = Files.readString(path);
-
-        Pattern pattern = Pattern.compile("execute_script .*");
-        var patternMatcher = pattern.matcher(str);
-        while (patternMatcher.find())
-        {
-            Path newPath = Path.of(patternMatcher.group().split(" ")[1]);
-            if(checkRecursion(newPath, stack)) return true;
-        }
-        stack.removeLast();
-        return false;
-    }*/
 
     @Override
     public void filterByGoldenPalmCount(String[] args) {
@@ -208,7 +215,7 @@ public class CommandReceiver extends AbstractReceiver {
     public void history(String[] args) {
         IOutputManager output = shell.getOutputManager();
 
-        output.print("[");
+        output.print("История команд [");
         for(Command i : shell.getHistoryManager().getHistory()){
             output.print("\t" + i.getName());
         }
